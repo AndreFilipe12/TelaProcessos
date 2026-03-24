@@ -1,4 +1,4 @@
-# SEMIT - Sistema de Acompanhimento de Processos
+# SEMIT - Sistema de Acompanhimento de Processos (Fictcio)
 
 Sistema web para gerenciamento de processos administrativos da Secretaria de Inovação e Tecnologia (SEMIT). Permite cadastrar, listar, editar, excluir e buscar processos, com autenticação segura, paginação e interface responsiva.
 
