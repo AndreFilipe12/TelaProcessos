@@ -1,0 +1,219 @@
+/* ================= RESET & BASE ================= */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f4f6f8;
+}
+
+/* ================= HEADER ================= */
+.main-header {
+    background-color: #34548b;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 40px;
+}
+
+.main-header h1 {
+    margin: 0;
+    font-size: 28px;
+}
+
+.header-logo {
+    height: 80px; 
+}
+
+/* ================= CONTEÚDO PRINCIPAL ================= */
+.main-content {
+    padding: 40px;
+    display: flex;
+    justify-content: center;
+}
+
+.page-container {
+    width: 90%;
+    max-width: 1400px;
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.page-title {
+    color: #2f5f8f;
+    margin-bottom: 25px;
+    font-size: 22px;
+}
+
+/* ================= TOOLBAR (BUSCA E BOTÃO ADICIONAR) ================= */
+.toolbar {
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: flex-start; 
+}
+
+.search-wrapper {
+    display: flex;      
+    align-items: center; 
+    gap: 10px;           
+}
+
+.form-input {
+    width: 320px;
+    padding: 10px 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.form-input:focus {
+    border-color: #34548b;
+}
+
+/* ================= BOTÕES ================= */
+.btn-primary {
+    background-color: #5b7fa3;
+    color: white;
+    border: none;
+    padding: 0 18px;    
+    height: 38px;        
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 22px;     
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease;
+    margin-left: 8px;
+}
+
+.btn-primary:hover {
+    background-color: #466685;
+    
+}
+
+/* Botoes de Ação na Tabela */
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-edit {
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-danger {
+    background-color: #d9534f;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.btn-danger:hover {
+    background-color: #c9302c;
+}
+
+/* ================= TABELA ================= */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto; 
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.data-table th {
+    background-color: #eef2f6;
+    padding: 15px 12px;
+    text-align: left;
+    color: #34548b;
+    border-bottom: 2px solid #34548b;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.data-table td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+    color: #444;
+}
+
+.data-table tbody tr:hover {
+    background-color: #f9fbff;
+}
+
+/* ================= STATUS BADGES ================= */
+/* Status badges */
+.status-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.85em;
+    font-weight: 500;
+    text-align: center;
+    min-width: 100px;
+}
+
+/* Urgente - Vermelho */
+.status-urgente {
+    background-color: #ffebee;
+    color: #c62828;
+    border: 1px solid #ef9a9a;
+}
+
+/* Aguardando aprovação - Amarelo */
+.status-aguardando {
+    background-color: #fff8e1;
+    color: #ff8f00;
+    border: 1px solid #ffe082;
+}
+
+/* Em andamento - Azul */
+.status-andamento {
+    background-color: #e3f2fd;
+    color: #1565c0;
+    border: 1px solid #90caf9;
+}
+
+/* Finalizado/Concluído - Verde */
+.status-finalizado {
+    background-color: #e8f5e8;
+    color: #2e7d32;
+    border: 1px solid #a5d6a7;
+}
+
+/* Outros status - Cinza */
+.status-outros {
+    background-color: #f5f5f5;
+    color: #616161;
+    border: 1px solid #bdbdbd;
+}
+
+/* ================= RESPONSIVIDADE ================= */
+@media (max-width: 768px) {
+    .search-wrapper {
+        width: 100%;
+    }
+    .form-input {
+        flex: 1; 
+    }
+}

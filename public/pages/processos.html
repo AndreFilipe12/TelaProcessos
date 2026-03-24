@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acompanhamento de Processos - SEMIT</title>
+    <link rel="stylesheet" href="../css/processos.css">
+</head>
+<body>
+
+    <header class="main-header">
+        <h1>Secretaria de Inovação e Tecnologia</h1>
+        <img src="../img/semit.png" class="header-logo" alt="Logo SEMIT">
+    </header>
+
+    <main class="main-content">
+        <section class="page-container">
+
+            <h2 class="page-title">Acompanhamento de Processos</h2>
+
+            <div class="toolbar">
+                <div class="search-wrapper">
+                    <input type="text" id="buscaProcesso" class="form-input" placeholder="Buscar processo...">
+                </div>
+                <button class="btn-primary" onclick="adicionarProcessoPrompt()" title="Adicionar Novo Processo">+</button>
+            </div>
+
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Número</th>
+                            <th>Descrição</th>
+                            <th>Status</th>
+                            <th>Procedência</th>
+                            <th>Destino</th>
+                            <th>Atualização</th>
+                            <th>Tempo</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabela-corpo">
+                        <tr>
+                            <td colspan="8" class="loading-message">Carregando processos...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </section>
+    </main>
+
+    <script src="../js/script.js"></script>
+</body>
+</html>
