@@ -14,13 +14,11 @@ Sistema web para gerenciamento de processos administrativos da Secretaria de Ino
 
 - ✅ Autenticação de usuários (senhas criptografadas com bcrypt)
 - ✅ Listagem de processos com **busca em tempo real**
-- ✅ **Paginação** (10 processos por página)
 - ✅ **CRUD completo** (criar, ler, atualizar, deletar)
 - ✅ Edição apenas da descrição (via prompt)
 - ✅ **Cálculo automático do tempo** desde a última atualização
 - ✅ Status coloridos (Urgente, Em andamento, Aguardando, Finalizado)
 - ✅ Interface responsiva e amigável
-- ✅ Tecla **Enter** no formulário de login
 - ✅ Containerização com Docker (pronto para deploy)
 
 ## 🐳 Como Executar com Docker
