@@ -31,3 +31,27 @@ Sistema web para gerenciamento de processos administrativos da Secretaria de Ino
    ```bash
    git clone https://github.com/AndreFilipe12/TelaProcessos.git
    cd TelaProcessos
+
+Estrutura do Projeto
+text
+.
+├── public/               # Arquivos estáticos
+│   ├── css/              # Estilos
+│   ├── img/              # Imagens
+│   ├── js/               # JavaScript
+│   └── pages/            # Páginas HTML
+├── .dockerignore
+├── .gitignore
+├── Dockerfile
+├── docker-compose.yml
+├── init-mongo.js         # Script de inicialização do banco (cria usuário admin)
+├── package.json
+├── server.js
+└── README.md
+
+🔧 Comandos Úteis
+Comando	Descrição
+docker-compose up -d	Inicia todos os containers
+docker-compose down	Para e remove os containers
+docker-compose logs -f app	Acompanha os logs da aplicação
+docker exec -it semit-app sh	Acessa o terminal do container da aplicação
