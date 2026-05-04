@@ -1,10 +1,16 @@
-node_modules
+# Dependências
+node_modules/
 npm-debug.log
-.git
+package-lock.json   # (opcional, mas pode incluir)
+
+# Ambiente
 .env
+.env.*
+*.local
+
+# Sistema
 .DS_Store
-README.md
-.gitignore
-.dockerignore
-Dockerfile
-docker-compose.yml
+Thumbs.db
+
+# Logs
+*.log
