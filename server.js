@@ -16,7 +16,7 @@ app.get("/", (req, res) => {
 });
 
 // Configuração da Conexão (OKD ou Local)
-const uri = process.env.MONGODB_URI || "mongodb://localhost:27017/sistema";
+const uri = process.env.MONGODB_URI || "mongodb+srv://andrereis_db_user:SenhaSegura2026@cluster0.yglzaw0.mongodb.net/sistema?retryWrites=true&w=majority";
 const client = new MongoClient(uri);
 
 let db;
