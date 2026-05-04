@@ -55,10 +55,18 @@ function getStatusClass(status) {
 
 // ========== FUNÇÕES CRUD ==========
 
-// Login
+// Login corrigido
 async function login() {
-    const usuario = document.getElementById("usuario").value;
-    const senha = document.getElementById("senha").value;
+    const usuarioCampo = document.getElementById("usuario");
+    const senhaCampo = document.getElementById("senha");
+
+    if (!usuarioCampo || !senhaCampo) {
+        console.error("Erro: IDs 'usuario' ou 'senha' não encontrados no HTML.");
+        return;
+    }
+
+    const usuario = usuarioCampo.value;
+    const senha = senhaCampo.value;
 
     try {
         const resposta = await fetch("/login", {
@@ -70,65 +78,14 @@ async function login() {
         const dados = await resposta.json();
 
         if (dados.sucesso) {
+            console.log("✅ Login realizado com sucesso!");
             window.location.href = "/pages/processos.html";
         } else {
-            alert("Usuário ou senha inválidos");
+            alert("❌ Usuário ou senha incorretos!");
         }
     } catch (erro) {
-        alert("Erro ao conectar ao servidor");
-    }
-}
-
-// ADICIONAR PROCESSO VIA PROMPT
-async function adicionarProcessoPrompt() {
-    const numero = prompt("📌 Número do processo (ex: 001/2024):");
-    if (!numero) return;
-    
-    const descricao = prompt("📝 Descrição do processo:");
-    if (!descricao) return;
-    
-    const status = prompt("⚡ Status (Aguardando aprovação, Em andamento, Urgente, Finalizado):", "Em andamento");
-    if (!status) return;
-    
-    const procedencia = prompt("📤 Procedência (Origem):");
-    if (!procedencia) return;
-    
-    const destino = prompt("📥 Destino:");
-    if (!destino) return;
-    
-    // Data atual no formato DD/MM/YYYY
-    const hoje = new Date();
-    const dia = String(hoje.getDate()).padStart(2, '0');
-    const mes = String(hoje.getMonth() + 1).padStart(2, '0');
-    const ano = hoje.getFullYear();
-    const dataAtualizacao = `${dia}/${mes}/${ano}`;
-    
-    const processo = {
-        numero: numero.trim(),
-        descricao: descricao.trim(),
-        status: status.trim(),
-        procedencia: procedencia.trim(),
-        destino: destino.trim(),
-        dataAtualizacao: dataAtualizacao
-    };
-    
-    try {
-        const resposta = await fetch("/processos", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(processo)
-        });
-        
-        if (resposta.ok) {
-            alert("✅ Processo adicionado com sucesso!");
-            const buscaInput = document.getElementById("buscaProcesso");
-            await carregarProcessos(buscaInput ? buscaInput.value : "");
-        } else {
-            alert("❌ Erro ao adicionar processo");
-        }
-    } catch (erro) {
-        console.error("Erro:", erro);
-        alert("❌ Erro ao conectar ao servidor");
+        console.error("Erro ao conectar:", erro);
+        alert("❌ Erro ao conectar ao servidor. Verifique se o backend está rodando.");
     }
 }
 
@@ -141,23 +98,16 @@ async function carregarProcessos(termoBusca = "") {
         const tabela = document.getElementById("tabela-corpo");
         if (!tabela) return;
 
-        // Aplicar filtro de busca
+        // Filtro de busca
         if (termoBusca.trim() !== "") {
             const termo = termoBusca.toLowerCase().trim();
             processos = processos.filter(proc => {
                 return (
                     (proc.numero && proc.numero.toLowerCase().includes(termo)) ||
                     (proc.descricao && proc.descricao.toLowerCase().includes(termo)) ||
-                    (proc.status && proc.status.toLowerCase().includes(termo)) ||
-                    (proc.procedencia && proc.procedencia.toLowerCase().includes(termo)) ||
-                    (proc.destino && proc.destino.toLowerCase().includes(termo))
+                    (proc.status && proc.status.toLowerCase().includes(termo))
                 );
             });
-        }
-
-        if (processos.length === 0) {
-            tabela.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 40px; color: #7f8c8d;">Nenhum processo encontrado</td></tr>`;
-            return;
         }
 
         // Ordenar por data (mais recentes primeiro)
@@ -184,81 +134,75 @@ async function carregarProcessos(termoBusca = "") {
                 <td>${dataFormatada}</td>
                 <td class="tempo-cell">${tempo}</td>
                 <td class="actions-cell">
-                    <button onclick="editarDescricao('${proc._id}', '${proc.descricao ? proc.descricao.replace(/'/g, "\\'") : ""}')" class="btn-edit" title="Editar apenas descrição">✏️</button>
-                    <button onclick="deletarProcesso('${proc._id}')" class="btn-delete" title="Excluir processo">🗑️</button>
+                    <button onclick="editarDescricao('${proc._id}', '${proc.descricao ? proc.descricao.replace(/'/g, "\\'") : ""}')" class="btn-edit" title="Editar">✏️</button>
+                    <button onclick="deletarProcesso('${proc._id}')" class="btn-delete" title="Excluir">🗑️</button>
                 </td>
             `;
-            
             tabela.appendChild(linha);
         });
 
     } catch (erro) {
-        console.error("Erro ao carregar processos:", erro);
-        const tabela = document.getElementById("tabela-corpo");
-        if (tabela) {
-            tabela.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #c62828; padding: 40px;">Erro ao carregar processos. Verifique o servidor.</td></tr>`;
-        }
+        console.error("Erro ao carregar:", erro);
     }
 }
 
-// EDITAR APENAS DESCRIÇÃO VIA PROMPT
-async function editarDescricao(id, descricaoAtual) {
-    const novaDescricao = prompt("✏️ Editar descrição do processo:", descricaoAtual);
+// Adicionar processo
+async function adicionarProcessoPrompt() {
+    const numero = prompt("📌 Número do processo:");
+    const descricao = prompt("📝 Descrição:");
+    const status = prompt("⚡ Status:", "Em andamento");
+    const procedencia = prompt("📤 Procedência:");
+    const destino = prompt("📥 Destino:");
     
-    if (novaDescricao === null) return;
+    if (!numero || !descricao) return;
+
+    const hoje = new Date();
+    const dataAtualizacao = `${String(hoje.getDate()).padStart(2, '0')}/${String(hoje.getMonth() + 1).padStart(2, '0')}/${hoje.getFullYear()}`;
     
-    if (novaDescricao.trim() === "") {
-        alert("❌ A descrição não pode ficar vazia");
-        return;
-    }
-    
-    if (novaDescricao.trim() === descricaoAtual) {
-        alert("ℹ️ Nenhuma alteração foi feita");
-        return;
-    }
+    const processo = { numero, descricao, status, procedencia, destino, dataAtualizacao };
     
     try {
-        const resposta = await fetch("/processos/" + id, {
-            method: "PUT",
+        const resposta = await fetch("/processos", {
+            method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ 
-                descricao: novaDescricao.trim() 
-            })
+            body: JSON.stringify(processo)
         });
         
         if (resposta.ok) {
-            alert("✅ Descrição atualizada com sucesso!");
-            const buscaInput = document.getElementById("buscaProcesso");
-            await carregarProcessos(buscaInput ? buscaInput.value : "");
-        } else {
-            alert("❌ Erro ao atualizar descrição");
+            alert("✅ Adicionado!");
+            carregarProcessos();
         }
-        
     } catch (erro) {
-        console.error("Erro ao editar:", erro);
-        alert("❌ Erro ao conectar ao servidor");
+        alert("❌ Erro ao salvar");
     }
 }
 
 // Deletar processo
 async function deletarProcesso(id) {
-    if (!confirm("🗑️ Tem certeza que deseja excluir este processo?")) return;
+    if (!confirm("🗑️ Excluir este processo?")) return;
 
     try {
-        const resposta = await fetch("/processos/" + id, {
-            method: "DELETE"
-        });
-        
-        if (resposta.ok) {
-            alert("✅ Processo excluído com sucesso!");
-            const buscaInput = document.getElementById("buscaProcesso");
-            await carregarProcessos(buscaInput ? buscaInput.value : "");
-        } else {
-            alert("❌ Erro ao excluir processo");
-        }
+        const resposta = await fetch("/processos/" + id, { method: "DELETE" });
+        if (resposta.ok) carregarProcessos();
     } catch (erro) {
-        console.error("Erro:", erro);
-        alert("❌ Erro ao conectar ao servidor");
+        alert("❌ Erro ao deletar");
+    }
+}
+
+// Editar descrição
+async function editarDescricao(id, descricaoAtual) {
+    const novaDescricao = prompt("✏️ Editar descrição:", descricaoAtual);
+    if (novaDescricao === null || novaDescricao.trim() === "") return;
+    
+    try {
+        const resposta = await fetch("/processos/" + id, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ descricao: novaDescricao.trim() })
+        });
+        if (resposta.ok) carregarProcessos();
+    } catch (erro) {
+        alert("❌ Erro ao editar");
     }
 }
 
@@ -267,17 +211,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const tabela = document.getElementById("tabela-corpo");
     const buscaInput = document.getElementById("buscaProcesso");
     
-    if (tabela) {
-        carregarProcessos();
-    }
+    if (tabela) carregarProcessos();
     
     if (buscaInput) {
-        let timeoutId;
         buscaInput.addEventListener("input", (e) => {
-            clearTimeout(timeoutId);
-            timeoutId = setTimeout(() => {
-                carregarProcessos(e.target.value);
-            }, 300);
+            carregarProcessos(e.target.value);
         });
     }
 });
