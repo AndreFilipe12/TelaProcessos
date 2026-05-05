@@ -1,22 +1,23 @@
+require('dotenv').config();
+
 const express = require("express");
 const { MongoClient, ObjectId } = require("mongodb");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
 
-const app = express();
+const app = express(); // ✅ FALTAVA ISSO
+
+// 🔥 URI (usa .env ou fallback)
+const uri = process.env.MONGODB_URI || "mongodb+srv://andrereis_db_user:Filipe2026Atlas@cluster0.yglzaw0.mongodb.net/sistema";
+
+// Debug (pode remover depois)
+console.log("URI:", uri);
 
 // Middlewares
 app.use(express.json());
 app.use(cors());
 app.use(express.static("public"));
 
-// Rota inicial - Garante que ao abrir o site, ele vá para o login
-app.get("/", (req, res) => {
-    res.redirect("/pages/login.html");
-});
-
-// Configuração da Conexão (OKD ou Local)
-const uri = process.env.MONGODB_URI || "mongodb+srv://andrereis_db_user:SenhaSegura2026@cluster0.yglzaw0.mongodb.net/sistema?retryWrites=true&w=majority";
 const client = new MongoClient(uri);
 
 let db;
@@ -27,7 +28,7 @@ async function conectar() {
         db = client.db("sistema");
         console.log("✅ MongoDB conectado!");
         
-        // Verifica/Cria usuário admin padrão
+        // Admin padrão
         const admin = await db.collection("usuarios").findOne({ usuario: "admin" });
         if (!admin) {
             const senhaHash = await bcrypt.hash("123456", 10);
@@ -36,76 +37,64 @@ async function conectar() {
                 senha: senhaHash,
                 criadoEm: new Date()
             });
-            console.log("✅ Usuário admin padrão (123456) criado com sucesso.");
+            console.log("✅ Admin criado (123456)");
         }
     } catch (erro) {
-        console.error("❌ Erro na conexão MongoDB:", erro.message);
+        console.error("❌ Erro MongoDB:", erro.message);
     }
 }
 conectar();
 
-// === ROTA DE LOGIN ===
+// Rota inicial
+app.get("/", (req, res) => {
+    res.redirect("/pages/login.html");
+});
+
+// LOGIN
 app.post("/login", async (req, res) => {
     try {
         const { usuario, senha } = req.body;
-        console.log(`📡 Tentativa de login: ${usuario}`);
 
         const user = await db.collection("usuarios").findOne({ usuario });
-        
+
         if (user && await bcrypt.compare(senha, user.senha)) {
-            console.log("✅ Login aprovado!");
             res.json({ sucesso: true });
         } else {
-            console.log("❌ Login negado: Usuário ou senha incorretos.");
-            res.json({ sucesso: false, mensagem: "Credenciais inválidas" });
+            res.json({ sucesso: false });
         }
-    } catch (erro) {
-        res.status(500).json({ sucesso: false, erro: erro.message });
-    }
-});
-
-// === ROTAS DE PROCESSOS ===
-app.get("/processos", async (req, res) => {
-    try {
-        const processos = await db.collection("processos").find().toArray();
-        res.json(processos);
     } catch (erro) {
         res.status(500).json({ erro: erro.message });
     }
+});
+
+// PROCESSOS
+app.get("/processos", async (req, res) => {
+    const processos = await db.collection("processos").find().toArray();
+    res.json(processos);
 });
 
 app.post("/processos", async (req, res) => {
-    try {
-        await db.collection("processos").insertOne(req.body);
-        res.status(201).json({ sucesso: true });
-    } catch (erro) {
-        res.status(500).json({ sucesso: false, erro: erro.message });
-    }
+    await db.collection("processos").insertOne(req.body);
+    res.json({ sucesso: true });
 });
 
 app.delete("/processos/:id", async (req, res) => {
-    try {
-        const resultado = await db.collection("processos").deleteOne({ _id: new ObjectId(req.params.id) });
-        res.json({ sucesso: resultado.deletedCount > 0 });
-    } catch (erro) {
-        res.status(500).json({ erro: erro.message });
-    }
+    const resultado = await db.collection("processos").deleteOne({
+        _id: new ObjectId(req.params.id)
+    });
+    res.json({ sucesso: resultado.deletedCount > 0 });
 });
 
 app.put("/processos/:id", async (req, res) => {
-    try {
-        const resultado = await db.collection("processos").updateOne(
-            { _id: new ObjectId(req.params.id) },
-            { $set: req.body }
-        );
-        res.json({ sucesso: resultado.matchedCount > 0 });
-    } catch (erro) {
-        res.status(500).json({ erro: erro.message });
-    }
+    const resultado = await db.collection("processos").updateOne(
+        { _id: new ObjectId(req.params.id) },
+        { $set: req.body }
+    );
+    res.json({ sucesso: resultado.matchedCount > 0 });
 });
 
-// Porta dinâmica para OKD (8080) ou Local (3000)
+// Porta
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`🚀 Servidor rodando em: http://localhost:${PORT}`);
+    console.log(`🚀 Servidor rodando em http://localhost:${PORT}`);
 });
