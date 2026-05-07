@@ -5,12 +5,11 @@ const { MongoClient, ObjectId } = require("mongodb");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
 
-const app = express(); // ✅ FALTAVA ISSO
+const app = express(); 
 
 // 🔥 URI (usa .env ou fallback)
 const uri = process.env.MONGODB_URI || "mongodb+srv://andrereis_db_user:Filipe2026Atlas@cluster0.yglzaw0.mongodb.net/sistema";
 
-// Debug (pode remover depois)
 console.log("URI:", uri);
 
 // Middlewares
